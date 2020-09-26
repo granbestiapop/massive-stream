@@ -591,6 +591,7 @@ dependencies = [
  "futures",
  "reqwest",
  "tokio",
+ "tokio-util",
 ]
 
 [[package]]
