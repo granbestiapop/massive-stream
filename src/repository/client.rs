@@ -51,9 +51,8 @@ impl RestClient {
                 .await
                 .and_then(|r| r.error_for_status());
             match res {
-                Err(e) if tries > 1 => {
+                Err(_e) if tries > 1 => {
                     tries -= 1;
-                    //log::error!("{}", e);
                     tokio::time::delay_for(backoff_strategy.time()).await;
                 }
                 res => return res,

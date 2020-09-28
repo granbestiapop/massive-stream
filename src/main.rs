@@ -1,14 +1,10 @@
-use tokio::fs::File;
-
 use futures::stream::{StreamExt, TryStreamExt};
-use tokio::io::{AsyncBufReadExt, BufReader};
+use tokio::io::{AsyncBufReadExt};
 use tokio_util::compat::FuturesAsyncReadCompatExt;
 
-const CONCURRENT_REQUESTS: usize = 3;
-const S3_FILE_URL: &str = "http://localhost:8080/s3";
-const UPLOADER_DATA_PATH: &str = "http://localhost:8080/a/";
-const LOCAL_FILE_DIR: &str = "data/foo.txt";
-
+const CONCURRENT_REQUESTS: usize = 100;
+const S3_FILE_URL: &str = "http://localhost:8080/bigfile.txt";
+const UPLOADER_DATA_PATH: &str = "http://localhost:8080/topic/";
 
 mod repository;
 use repository::client::RestClient;
@@ -17,7 +13,7 @@ async fn do_call(client: &RestClient, path: String) -> Result<String, Box<dyn st
     let url = format!("{}{}", UPLOADER_DATA_PATH, path);
     println!("Starting {}", url);
     let req = client
-        .request(reqwest::Method::GET, url.as_str())
+        .request(reqwest::Method::POST, url.as_str())
         .build()?;
     let text = client.execute(req).await?.text().await?;
     Ok(text)
@@ -26,8 +22,8 @@ async fn do_call(client: &RestClient, path: String) -> Result<String, Box<dyn st
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error + 'static>> {
-    let file = File::open(LOCAL_FILE_DIR).await?;
-    let file_stream = BufReader::new(file);
+    //let file = File::open(LOCAL_FILE_DIR).await?;
+    //let file_stream = BufReader::new(file);
     let chunk_size: usize = 1024 * 1024; // 1M
     let mut total_chunks: u32 = 0;
     let mut bytes_size: usize = 0;
