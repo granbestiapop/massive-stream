@@ -1,8 +1,28 @@
-use reqwest::{Client, IntoUrl, Method, Request, RequestBuilder, Response};
+use reqwest::{IntoUrl, Method, RequestBuilder, Response};
 use std::time::Duration;
 
 pub struct RestClient {
     inner: reqwest::Client,
+}
+pub struct ExponentialBackoff {
+    timeout: u64,
+    exp: usize,
+    max_backoff: u64,
+}
+
+impl ExponentialBackoff {
+    pub fn new(millisecs: u64) -> Self {
+        Self {
+            timeout: millisecs,
+            exp: 1,
+            max_backoff: 5000,
+        }
+    }
+    pub fn time(&mut self) -> Duration {
+        let timeout = self.max_backoff.min(self.exp as u64 * self.timeout);
+        self.exp = self.exp * 2;
+        Duration::from_millis(timeout)
+    }
 }
 
 impl RestClient {
@@ -17,15 +37,13 @@ impl RestClient {
     }
 
     // TODO with header
-    pub async fn stream(&self, req: reqwest::Request) -> Result<Response, reqwest::Error>{
+    pub async fn stream(&self, req: reqwest::Request) -> Result<Response, reqwest::Error> {
         self.inner.execute(req.try_clone().unwrap()).await
     }
 
-    pub async fn execute(
-        &self,
-        req: reqwest::Request,
-    ) -> Result<Response, reqwest::Error> {
+    pub async fn execute(&self, req: reqwest::Request) -> Result<Response, reqwest::Error> {
         let mut tries: usize = 5;
+        let mut backoff_strategy = ExponentialBackoff::new(50);
 
         loop {
             let res = self
@@ -37,7 +55,7 @@ impl RestClient {
                 Err(e) if tries > 1 => {
                     tries -= 1;
                     //log::error!("{}", e);
-                    tokio::time::delay_for(Duration::from_millis(500)).await;
+                    tokio::time::delay_for(backoff_strategy.time()).await;
                 }
                 res => return res,
             }
