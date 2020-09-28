@@ -1,0 +1,16 @@
+https://morestina.net/blog/1432/parallel-stream-processing-with-rayon#Stream_processing
+
+https://docs.rs/reqwest/0.10.8/reqwest/
+
+https://stackoverflow.com/questions/51044467/how-can-i-perform-parallel-asynchronous-http-get-requests-with-reqwest
+
+
+https://blog.yoshuawuyts.com/rust-streams/
+
+
+https://github.com/matthunz/futures-codec
+
+
+https://rust-cli.github.io/book/tutorial/cli-args.html
+
+https://medium.com/@vishal1909/how-to-handle-partial-content-in-node-js-8b0a5aea216
