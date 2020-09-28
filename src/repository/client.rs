@@ -28,7 +28,6 @@ impl ExponentialBackoff {
 impl RestClient {
     pub fn new() -> Result<Self, reqwest::Error> {
         let inner = reqwest::Client::builder().build()?;
-
         Ok(Self { inner })
     }
 
