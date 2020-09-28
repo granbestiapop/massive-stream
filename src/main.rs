@@ -3,17 +3,16 @@ use tokio::io::{AsyncBufReadExt};
 use tokio_util::compat::FuturesAsyncReadCompatExt;
 
 const CONCURRENT_REQUESTS: usize = 100;
-const S3_FILE_URL: &str = "http://localhost:8080/bigfile.txt";
-const UPLOADER_DATA_PATH: &str = "http://localhost:8080/topic/";
+const S3_FILE_URL: &str = "http://localhost:8080/stream";
+const UPLOADER_DATA_PATH: &str = "http://localhost:8080/topic";
 
 mod repository;
 use repository::client::RestClient;
 
-async fn do_call(client: &RestClient, path: String) -> Result<String, Box<dyn std::error::Error>> {
-    let url = format!("{}{}", UPLOADER_DATA_PATH, path);
-    println!("Starting {}", url);
+async fn do_call(client: &RestClient, body: String) -> Result<String, Box<dyn std::error::Error>> {
     let req = client
-        .request(reqwest::Method::POST, url.as_str())
+        .request(reqwest::Method::POST, UPLOADER_DATA_PATH)
+        .body(body)
         .build()?;
     let text = client.execute(req).await?.text().await?;
     Ok(text)
@@ -52,7 +51,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error + 'static>> {
                 bytes_size -= chunk_size;
                 total_chunks += 1;
             }
-            println!("chunks: {}, bytes:{}", total_chunks, bytes_size);
+            //println!("chunks: {}, bytes:{}", total_chunks, bytes_size);
             line
         })
         //# Output Stream
