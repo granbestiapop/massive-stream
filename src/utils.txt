@@ -14,3 +14,9 @@ https://github.com/matthunz/futures-codec
 https://rust-cli.github.io/book/tutorial/cli-args.html
 
 https://medium.com/@vishal1909/how-to-handle-partial-content-in-node-js-8b0a5aea216
+
+
+## Spark
+https://www.tutorialkart.com/apache-spark/load-data-from-json-file-and-execute-sql-query/
+
+https://towardsdatascience.com/diy-apache-spark-docker-bb4f11c10d24
