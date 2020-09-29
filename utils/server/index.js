@@ -5,7 +5,7 @@ var PORT = process.env.PORT || 8080;
 var app = express();
 
 app.get('/stream', (_req, res) => {
-  const readStream = createReadStream('./data/big.txt');
+  const readStream = createReadStream('./data/big.json');
   readStream.pipe(res);
 });
 
