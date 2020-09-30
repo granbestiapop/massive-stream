@@ -1,5 +1,5 @@
 use futures::stream::{StreamExt, TryStreamExt};
-use tokio::io::{AsyncBufReadExt};
+use tokio::io::AsyncBufReadExt;
 use tokio_util::compat::FuturesAsyncReadCompatExt;
 
 #[macro_use]
@@ -10,8 +10,7 @@ use repository::client::RestClient;
 
 const CONCURRENT_REQUESTS: usize = 100;
 const DEFAULT_FILE_URL: &str = "http://localhost:8080/stream";
-const DEFAULT_TARGET: &str = "http://host.docker.internal:8080/topic";
-
+const DEFAULT_TARGET: &str = "http://localhost:8080/topic";
 
 lazy_static! {
     static ref FILE_URL: String = std::env::var("FILE").unwrap_or(DEFAULT_FILE_URL.to_string());
@@ -27,7 +26,6 @@ async fn do_call(client: &RestClient, body: String) -> Result<String, Box<dyn st
     Ok(text)
 }
 
-
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error + 'static>> {
     let chunk_size: usize = 1024 * 1024; // 1M
@@ -39,7 +37,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error + 'static>> {
     let req = restclient
         .request(reqwest::Method::GET, FILE_URL.as_str())
         .build()?;
-    let response =  restclient.stream(req).await?;
+    let response = restclient.stream(req).await?;
     response
         //# Input Stream
         .bytes_stream()

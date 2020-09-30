@@ -1,5 +1,6 @@
 var express = require('express');
 const { createReadStream } = require('fs');
+const fs = require('fs');
 
 var PORT = process.env.PORT || 8080;
 var app = express();
@@ -10,10 +11,20 @@ app.get('/stream', (req, res) => {
   readStream.pipe(res);
 });
 
-app.get('/stream/small', (req, res) => {
+
+app.get('/stream/small', (req, res, next) => {
+  if(req.method === 'HEAD'){
+    return next();
+  }
   let options = getRangeOptions(req);
   const readStream = createReadStream('./data/small.json', options);
   readStream.pipe(res);
+});
+
+app.head('/stream/small', (req, res) => {
+  const stats = fs.statSync('./data/small.json');
+  res.set('content-length', stats.size);
+  res.status(200).send();
 });
 
 
