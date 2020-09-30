@@ -56,6 +56,7 @@ app.head('/stream/small', (req, res) => {
 
 
 app.post('/topic', (_req, res) => {
+  //res.status(500).send();
   res.send({ test: 'pong' });
 });
 
