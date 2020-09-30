@@ -93,7 +93,6 @@ async fn process_stream(
         .compat()
         .lines();
 
-    // Hack double trait
     let stream = tokio::stream::StreamExt::map(line_stream, |a| a);
     let stream = tokio::stream::StreamExt::take_while(stream, move |result| {
         check_error(next_range, result)
