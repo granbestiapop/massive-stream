@@ -5,15 +5,24 @@ const fs = require('fs');
 var PORT = process.env.PORT || 8080;
 var app = express();
 
-app.get('/stream', (req, res) => {
+app.get('/stream', (req, res, next) => {
+  if (req.method === 'HEAD') {
+    return next();
+  }
   let options = getRangeOptions(req);
   const readStream = createReadStream('./data/big.json', options);
   readStream.pipe(res);
 });
 
+app.head('/stream', (req, res) => {
+  const stats = fs.statSync('./data/big.json');
+  res.set('content-length', stats.size);
+  res.status(200).send();
+});
+
 
 app.get('/stream/small', (req, res, next) => {
-  if(req.method === 'HEAD'){
+  if (req.method === 'HEAD') {
     return next();
   }
   let options = getRangeOptions(req);
@@ -33,10 +42,10 @@ app.post('/topic', (_req, res) => {
 });
 
 
-function getRangeOptions(req){
+function getRangeOptions(req) {
   let options = {};
   const rangeHeader = req.headers.range;
-  if (rangeHeader) { 
+  if (rangeHeader) {
     const range = rangeHeader.split('-');
     options.start = range[0] ? parseInt(range[0]) : null;
     options.end = range[1] ? parseInt(range[1]) : undefined;
