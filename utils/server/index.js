@@ -14,6 +14,24 @@ app.get('/stream', (req, res, next) => {
   readStream.pipe(res);
 });
 
+
+app.get('/stream/timeout', (req, res, next) => {
+  if (req.method === 'HEAD') {
+    return next();
+  }
+  res.setHeader('Content-Type', 'plain');
+  res.setHeader('Transfer-Encoding', 'chunked');
+  setInterval(function(){
+    console.log('time')
+    res.write("data\n");
+  }, 1000);
+});
+
+app.head('/stream/timeout', (_req, res) => {
+  res.set('content-length', 1500);
+  res.status(200).send();
+});
+
 app.head('/stream', (req, res) => {
   const stats = fs.statSync('./data/big.json');
   res.set('content-length', stats.size);
