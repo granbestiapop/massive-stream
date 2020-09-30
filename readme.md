@@ -19,7 +19,7 @@ docker build --tag massive-rust .
 ## Usage
 ```
 docker run --rm -it --network=host massive-rust:latest /bin/bash
-FILE=http://host.docker.internal:8080/stream TARGET=http://host.docker.internal:8080/topic time ./target/release/perf
+FILE=http://host.docker.internal:8080/stream TARGET=http://host.docker.internal:8080/topic ./target/release/perf
 ```
 
 
